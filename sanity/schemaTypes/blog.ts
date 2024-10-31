@@ -1,4 +1,3 @@
-import { title } from "process";
 
 export default {
     name: 'blog',
@@ -13,7 +12,10 @@ export default {
         {
             name: 'slug',
             type: 'slug',
-            title: 'Slug of blog article',
+            title: 'Slug of your blog article',
+            options: {
+                source: 'title',
+            },
         },
         {
             name: 'titlImage',
