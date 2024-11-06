@@ -1,4 +1,6 @@
-
+async function getData() {
+  
+}
 
 export default function Home() {
   return (
@@ -7,4 +9,5 @@ export default function Home() {
       <h1 className="text-2xl">Hello Daudi Homepage.</h1>
     </div>
   );
-}
+} 
+ 

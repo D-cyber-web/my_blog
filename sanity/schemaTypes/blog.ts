@@ -21,7 +21,7 @@ export default {
             name: 'titlImage',
             type: 'image',
             title: 'Title Image',
-        },
+        }, 
         {
             name: 'smallDescription',
             type: 'text',
