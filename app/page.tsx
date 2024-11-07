@@ -1,3 +1,4 @@
+import { Card } from "@/components/ui/card";
 import { simpleBlogCard } from "./lib/interface";
 import { client } from "./lib/sanity";
 
@@ -8,20 +9,22 @@ async function getData() {
     "currentSlug": slug.current,
     titleImage
   }`;
-  const data = await client.fetch(query)
+  const data = await client.fetch(query);
 
   return data;
 }
 
 export default async function Home() {
-  const data: simpleBlogCard[] = await getData()
+  const data: simpleBlogCard[] = await getData();
 
-  console.log(data)
+  console.log(data);
   return (
     <div className="grid grid-flow-cols-1 lg:grid-cols-4 mt-5">
-        {data.map((post)=>(
-          
-        ))}
+      {data.map((post, idx) => (
+        <Card key={idx}>
+          <Image src={urlFor{post.titleImage}.url[]} alt="image" width={500} height={500} />
+        </Card>
+      ))}
     </div>
   );
 }
