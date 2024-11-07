@@ -5,4 +5,4 @@ export const client = createClient ({
     dataset: 'production',
     projectId: 'mop52p55',
     useCdn: false,
-})
+});

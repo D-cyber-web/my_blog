@@ -5,7 +5,8 @@ async function getData() {
   const query = `*[_type == 'blog'] | order(_createdAt desc){
     title,
     smallDescription,
-    "currentSlug": slug.current
+    "currentSlug": slug.current,
+    titleImage
   }`;
   const data = await client.fetch(query)
 
@@ -13,12 +14,14 @@ async function getData() {
 }
 
 export default async function Home() {
-  const data: simpleBlogCard = await getData()
+  const data: simpleBlogCard[] = await getData()
 
   console.log(data)
   return (
-    <div>
-      <h1 className="text-2xl">Hello Daudi Homepage.</h1>
+    <div className="grid grid-flow-cols-1 lg:grid-cols-4 mt-5">
+        {data.map((post)=>(
+          
+        ))}
     </div>
   );
 }
