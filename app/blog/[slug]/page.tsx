@@ -1,5 +1,6 @@
 import { fullBlog } from "@/app/lib/interface";
 import { client, urlFor } from "@/app/lib/sanity";
+import { PortableText } from "next-sanity";
 import Image from "next/image";
 
 async function getData(slug: string) {
@@ -24,22 +25,30 @@ export default async function BlogArticle({
 
   const data: fullBlog = await getData(slug);
 
+  console.log(data);
+
   return (
     <div className="mt-8">
-        <h1>
-            <span className="block text-xl text-center text-primary font-semibold tracking-wide uppercase">
-              Davie Muthama - Blog
-            </span>
-            <span className="mt-2 block text-3xl text-center leading-8 font-bold tracking-tight sm:text-4xl">{data.title}</span>
-        </h1>
+      <h1>
+        <span className="block text-xl text-center text-primary font-semibold tracking-wide uppercase">
+          Davie Muthama - Blog
+        </span>
+        <span className="mt-2 block text-3xl text-center leading-8 font-bold tracking-tight sm:text-4xl">
+          {data.title}
+        </span>
+      </h1>
 
-        <Image 
-          src={urlFor(data.titleImage).url()} 
-          width={800} 
-          height={800} 
-          alt="Title Image" 
-          className="rounded-lg mt-8 border"
-          />
+      <Image
+        src={urlFor(data.titleImage).url()}
+        width={800}
+        height={800}
+        alt="Title Image"
+        priority
+        className="rounded-lg mt-8 border"
+      />
+      <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-primary prose-a:text-primary">
+          <PortableText value={data.content} />
+      </div>
     </div>
-  ); 
+  );
 }
