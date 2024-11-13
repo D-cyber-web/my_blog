@@ -3,7 +3,7 @@ import { client, urlFor } from "@/app/lib/sanity";
 import { PortableText } from "next-sanity";
 import Image from "next/image";
 
-async function getData(slug: string) {
+async function getData(slug: string): Promise<fullBlog | null> {
   const query = `
         *[_type == "blog" && slug.current == $slug] {
             "currentSlug": slug.current,
@@ -13,7 +13,7 @@ async function getData(slug: string) {
         }[0]
     `;
   const data = await client.fetch(query, { slug });
-  return data;
+  return data || null;  // Return null if no data is found
 }
 
 export default async function BlogArticle({
@@ -21,11 +21,14 @@ export default async function BlogArticle({
 }: {
   params: { slug: string };
 }) {
-  const { slug } = await params; // Await params here
+  const { slug } = params;
 
-  const data: fullBlog = await getData(slug);
+  const data = await getData(slug);
 
-  console.log(data);
+  // Check if data is null before rendering
+  if (!data) {
+    return <div>Blog post not found.</div>;
+  }
 
   return (
     <div className="mt-8">
@@ -38,16 +41,18 @@ export default async function BlogArticle({
         </span>
       </h1>
 
-      <Image
-        src={urlFor(data.titleImage).url()}
-        width={800}
-        height={800}
-        alt="Title Image"
-        priority
-        className="rounded-lg mt-8 border"
-      />
+      {data.titleImage && (
+        <Image
+          src={urlFor(data.titleImage).url()}
+          width={800}
+          height={800}
+          alt="Title Image"
+          priority
+          className="rounded-lg mt-8 border"
+        />
+      )}
       <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-primary prose-a:text-primary">
-          <PortableText value={data.content} />
+        <PortableText value={data.content} />
       </div>
     </div>
   );
