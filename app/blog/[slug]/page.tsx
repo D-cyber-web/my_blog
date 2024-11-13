@@ -3,32 +3,30 @@ import { client, urlFor } from "@/app/lib/sanity";
 import { PortableText } from "next-sanity";
 import Image from "next/image";
 
-async function getData(slug: string): Promise<fullBlog | null> {
+// Fetch the data based on the slug
+async function getData(slug: string) {
   const query = `
-        *[_type == "blog" && slug.current == $slug] {
-            "currentSlug": slug.current,
-            title,
-            content,
-            titleImage
-        }[0]
-    `;
+    *[_type == "blog" && slug.current == $slug] {
+      "currentSlug": slug.current,
+      title,
+      content,
+      titleImage
+    }[0]
+  `;
   const data = await client.fetch(query, { slug });
-  return data || null;  // Return null if no data is found
+  return data;
 }
 
-export default async function BlogArticle({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = params;
+// Define the type for the component props
+type BlogArticleProps = {
+  params: {
+    slug: string;
+  };
+};
 
-  const data = await getData(slug);
-
-  // Check if data is null before rendering
-  if (!data) {
-    return <div>Blog post not found.</div>;
-  }
+// Use the defined type for props
+export default async function BlogArticle({ params }: BlogArticleProps) {
+  const data: fullBlog = await getData(params.slug);
 
   return (
     <div className="mt-8">
@@ -41,16 +39,14 @@ export default async function BlogArticle({
         </span>
       </h1>
 
-      {data.titleImage && (
-        <Image
-          src={urlFor(data.titleImage).url()}
-          width={800}
-          height={800}
-          alt="Title Image"
-          priority
-          className="rounded-lg mt-8 border"
-        />
-      )}
+      <Image
+        src={urlFor(data.titleImage).url()}
+        width={800}
+        height={800}
+        alt="Title Image"
+        priority
+        className="rounded-lg mt-8 border"
+      />
       <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-primary prose-a:text-primary">
         <PortableText value={data.content} />
       </div>
