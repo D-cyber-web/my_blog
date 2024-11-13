@@ -3,30 +3,29 @@ import { client, urlFor } from "@/app/lib/sanity";
 import { PortableText } from "next-sanity";
 import Image from "next/image";
 
-// Fetch the data based on the slug
 async function getData(slug: string) {
   const query = `
-    *[_type == "blog" && slug.current == $slug] {
-      "currentSlug": slug.current,
-      title,
-      content,
-      titleImage
-    }[0]
-  `;
+        *[_type == "blog" && slug.current == $slug] {
+            "currentSlug": slug.current,
+            title,
+            content,
+            titleImage
+        }[0]
+    `;
   const data = await client.fetch(query, { slug });
   return data;
 }
 
-// Define the type for the component props
-type BlogArticleProps = {
-  params: {
-    slug: string;
-  };
-};
+export default async function BlogArticle({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const { slug } = await params; // Await params here
 
-// Use the defined type for props
-export default async function BlogArticle({ params }: BlogArticleProps) {
-  const data: fullBlog = await getData(params.slug);
+  const data: fullBlog = await getData(slug);
+
+  console.log(data);
 
   return (
     <div className="mt-8">
@@ -48,7 +47,7 @@ export default async function BlogArticle({ params }: BlogArticleProps) {
         className="rounded-lg mt-8 border"
       />
       <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-primary prose-a:text-primary">
-        <PortableText value={data.content} />
+          <PortableText value={data.content} />
       </div>
     </div>
   );
